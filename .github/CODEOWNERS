@@ -1,0 +1,6 @@
+# Python
+*.py @thesnake94
+
+# Documentation
+*.md @thesnake94
+/docs/ @thesnake94
