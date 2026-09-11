@@ -1,1 +1,1 @@
-MESSAGE=Version initiale
+MESSAGE=Bonjour depuis version B
