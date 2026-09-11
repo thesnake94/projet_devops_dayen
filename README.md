@@ -46,3 +46,9 @@ Exemples :
 - `feat(app): add welcome message`
 - `fix(app): correct calculation`
 - `docs(readme): document branch strategy`
+
+## Résolution de conflit
+
+Un conflit Git a été provoqué entre `conflict/version-a` et `conflict/version-b`.
+Les deux branches modifiaient la même ligne de `src/config.txt`.
+La résolution retenue combine les deux versions.
