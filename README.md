@@ -1,3 +1,5 @@
+[![CI](https://github.com/thesnake94/projet_devops_dayen/actions/workflows/ci.yml/badge.svg)](https://github.com/thesnake94/projet_devops_dayen/actions/workflows/ci.yml)
+
 # Atelier Git avancé
 
 ## Stratégie de branches
@@ -53,3 +55,20 @@ Un conflit Git a été provoqué entre `conflict/version-a` et `conflict/version
 Les deux branches modifiaient la même ligne de `src/config.txt`.
 La résolution retenue combine les deux versions.
 
+
+## Intégration continue
+
+Ce projet utilise GitHub Actions pour vérifier automatiquement que le code fonctionne correctement.
+
+Les vérifications se lancent :
+
+quand du code est envoyé sur la branche `main` ;
+quand une Pull Request est créée ou modifiée.
+
+GitHub vérifie d’abord le code avec flake8, puis lance les tests avec pytest.
+
+Les tests sont effectués avec Python 3.10, 3.11 et 3.12.
+
+GitHub garde aussi les dépendances en cache pour aller plus vite et génère un rapport de couverture des tests.
+
+Enfin, il n’est pas possible de fusionner du code dans `main` si les vérifications de la CI échouent.
