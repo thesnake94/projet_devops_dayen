@@ -27,3 +27,4 @@ def status():
 
 if __name__ == "__main__":
     app.run(debug=True)
+x = "Ceci est volontairement une ligne extrêmement longue pour provoquer une erreur flake8 et vérifier que le job test ne démarre pas quand le lint échoue"
