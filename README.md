@@ -72,3 +72,107 @@ Les tests sont effectués avec Python 3.10, 3.11 et 3.12.
 GitHub garde aussi les dépendances en cache pour aller plus vite et génère un rapport de couverture des tests.
 
 Enfin, il n’est pas possible de fusionner du code dans `main` si les vérifications de la CI échouent.
+
+
+
+
+
+
+# Séance 3 — Conteneurisation Docker
+
+## Build de l'image
+
+Se placer dans le dossier de l'application :
+
+cd starter-app2
+
+Construire l'image :
+
+sudo docker build -t projet-devops:latest .
+
+## Lancer l'application seule
+
+sudo docker run --rm -d \
+  --name projet-devops \
+  -p 5000:5000 \
+  projet-devops:latest
+
+Tester l'application :
+
+curl http://localhost:5000/health
+curl http://localhost:5000/status
+
+## Vérification utilisateur non-root
+
+sudo docker exec projet-devops whoami
+
+Résultat attendu :
+
+appuser
+
+## Docker Compose
+
+La stack contient deux services :
+
+- web : application Flask
+- redis : stockage persistant du compteur de visites
+
+Lancer la stack complète :
+
+sudo docker-compose up -d --build
+
+Vérifier l'état des services :
+
+sudo docker-compose ps
+
+Les services web et redis doivent être en état healthy.
+
+## Endpoints disponibles
+
+GET /health
+GET /status
+GET /visits
+
+Tester le compteur de visites :
+
+curl http://localhost:5000/visits
+
+Chaque appel incrémente le compteur stocké dans Redis.
+
+## Persistance Redis
+
+Le compteur /visits est stocké dans Redis avec un volume Docker nommé.
+
+Pour vérifier que le compteur survit au redémarrage du conteneur web :
+
+sudo docker-compose restart web
+curl http://localhost:5000/visits
+
+Le compteur doit continuer à augmenter et ne pas repartir à 1.
+
+## Comparaison des tailles des images
+
+Les tailles ont été mesurées avec :
+
+sudo docker images | grep projet-devops
+
+Résultats :
+
+- Image naïve : 1.13 GB
+- Image multi-stage : 154 MB
+
+L'image multi-stage est donc nettement plus légère que l'image naïve.
+
+## Image publiée sur le registry
+
+Image latest :
+
+TON_USERNAME/projet-devops:latest
+
+Image versionnée :
+
+TON_USERNAME/projet-devops:v1.0.0
+
+Téléchargement de l'image :
+
+sudo docker pull thesnake94/projet-devops:v1.0.0
