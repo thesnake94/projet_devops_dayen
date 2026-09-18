@@ -18,3 +18,7 @@ venv/
 # OS
 .DS_Store
 starter-app/.venv/
+starter-app2/.venv/
+starter-app2/__pycache__/
+starter-app2/.pytest_cache/
+starter-app2/.DS_Store
