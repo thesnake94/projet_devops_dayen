@@ -167,11 +167,11 @@ L'image multi-stage est donc nettement plus légère que l'image naïve.
 
 Image latest :
 
-TON_USERNAME/projet-devops:latest
+thesnake94/projet-devops:latest
 
 Image versionnée :
 
-TON_USERNAME/projet-devops:v1.0.0
+thesnake94/projet-devops:v1.0.0
 
 Téléchargement de l'image :
 
