@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+EXPECTED_SHA="${EXPECTED_SHA:-local}"
+
 COMPOSE_FILE="docker-compose.yml"
 STATE_FILE="deploy/.active-color"
 NGINX_CONFIG="deploy/nginx/default.conf"
@@ -71,7 +73,7 @@ if ! docker compose \
     --profile "$INACTIVE_COLOR" \
     exec -T "$INACTIVE_SERVICE" \
     python -c \
-    "import urllib.request,json; d=json.load(urllib.request.urlopen('http://localhost:5000/status')); assert d['deploy_color']=='$INACTIVE_COLOR'"; then
+    "import urllib.request,json; d=json.load(urllib.request.urlopen('http://localhost:5000/status')); assert d['deploy_color']=='$INACTIVE_COLOR'; assert d['commit_sha']=='$EXPECTED_SHA'"; then
 
     echo "Smoke test failed"
 

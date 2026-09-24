@@ -98,6 +98,8 @@ jobs:
           context: ./starter-app2
           file: ./starter-app2/Dockerfile
           push: true
+          build-args: |
+            COMMIT_SHA=${{ github.sha }}
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
@@ -129,6 +131,7 @@ jobs:
         working-directory: starter-app2
         env:
           APP_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          EXPECTED_SHA: ${{ github.sha }}
         run: |
           chmod +x deploy/deploy.sh
           ./deploy/deploy.sh

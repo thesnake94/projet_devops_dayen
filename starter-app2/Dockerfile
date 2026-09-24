@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 FROM python:3.12-slim
 
+ARG COMMIT_SHA=local
+ENV COMMIT_SHA=${COMMIT_SHA}
+
 WORKDIR /app
 
 RUN useradd --create-home appuser
