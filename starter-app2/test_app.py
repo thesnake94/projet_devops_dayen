@@ -52,3 +52,4 @@ def test_status_endpoint():
     response = client.get("/status")
     assert response.status_code == 200
     assert response.get_json()["service"] == "projet-devops-groupe-demo"
+    assert response.get_json()["commit_sha"] == "local"
