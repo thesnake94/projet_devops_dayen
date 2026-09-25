@@ -176,3 +176,190 @@ thesnake94/projet-devops:v1.0.0
 Téléchargement de l'image :
 
 sudo docker pull thesnake94/projet-devops:v1.0.0
+
+
+
+
+
+
+
+# Séance 5 — Observabilité Prometheus & Grafana
+
+## Lancer la stack d'observabilité
+
+Se placer dans le dossier de l'application :
+
+```bash
+cd starter-app2
+```
+
+Construire l'image applicative :
+
+```
+docker build -t projet-devops:latest .
+```
+
+Lancer la stack complète :
+
+```
+APP_IMAGE=projet-devops:latest docker compose --profile blue up -d
+```
+
+Vérifier l'état des conteneurs :
+
+```
+docker compose --profile blue ps
+```
+
+## Interfaces disponibles
+
+Application :
+
+http://localhost:8080
+
+Prometheus :
+
+http://localhost:9090
+
+Grafana :
+
+http://localhost:3000
+
+## Métriques Prometheus
+
+L'application expose les métriques sur :
+
+```
+GET /metrics
+```
+
+Les principales métriques sont :
+
+```
+http_requests_total
+http_request_duration_seconds
+```
+
+Le compteur HTTP distingue les requêtes grâce aux labels :
+
+```
+method
+endpoint
+status
+```
+
+L'endpoint `/metrics` lui-même est exclu du compteur afin de ne pas fausser les statistiques lors des scrapes Prometheus.
+
+## Prometheus
+
+Prometheus récupère automatiquement les métriques de l'application Flask.
+
+La configuration se trouve dans :
+
+```
+starter-app2/observability/prometheus/prometheus.yml
+```
+
+Les règles d'alerte se trouvent dans :
+
+```
+starter-app2/observability/prometheus/alerts.yml
+```
+
+La cible applicative peut être vérifiée dans :
+
+```
+http://localhost:9090/targets
+```
+
+Elle doit apparaître à l'état :
+
+```
+UP
+```
+
+## Grafana
+
+Grafana est disponible sur :
+
+http://localhost:3000
+
+Identifiant par défaut :
+
+```
+admin
+```
+
+Le mot de passe est défini via la variable d'environnement :
+
+```
+GRAFANA_ADMIN_PASSWORD
+```
+
+La datasource Prometheus est provisionnée automatiquement au démarrage de Grafana.
+
+## Dashboard
+
+Le dashboard Grafana est provisionné automatiquement depuis :
+
+```
+starter-app2/observability/grafana/dashboards/devops-observability.json
+```
+
+Il contient au minimum trois panneaux :
+
+- débit de requêtes par endpoint ;
+- taux d'erreur global ;
+- latence p95.
+
+Le débit est calculé à partir du compteur HTTP avec `rate()`.
+
+Le taux d'erreur utilise les réponses HTTP de type `5xx`.
+
+La latence p95 est calculée à partir des buckets de l'histogramme Prometheus avec `histogram_quantile()`.
+
+## Endpoint de simulation d'erreur
+
+L'application possède un endpoint permettant de générer volontairement une erreur HTTP :
+
+```
+GET /simulate-error
+```
+
+Cet endpoint retourne une erreur HTTP 500 et permet de tester les métriques et l'alerte Prometheus.
+
+## Alerte Prometheus
+
+L'alerte configurée est :
+
+```
+HighErrorRate
+```
+
+Elle se déclenche lorsque le taux d'erreur HTTP dépasse :
+
+```
+5 %
+```
+
+pendant au moins :
+
+```
+30 secondes
+```
+
+Le comportement attendu est :
+
+```
+inactive
+→ pending
+→ firing
+```
+
+Les alertes peuvent être consultées sur :
+
+http://localhost:9090/alerts
+
+Les règles Prometheus peuvent être consultées sur :
+
+http://localhost:9090/rules
